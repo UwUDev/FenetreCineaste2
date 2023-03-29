@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="555.0" prefWidth="925.0" style="-fx-background-color: FB8092;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quoi.feur.controller.MainController">
+   <children>
+      <ImageView fx:id="imageView" preserveRatio="true" />
+      <JFXButton layoutX="357.0" layoutY="340.0" onMouseClicked="#export" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="Export" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="134.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="15.0" layoutY="73.0" onMouseClicked="#invertX" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="Invert X" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="70.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="15.0" layoutY="14.0" onMouseClicked="#undo" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="UNDO" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="15.0" layoutY="140.0" onMouseClicked="#invertY" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="Invert Y" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="125.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="15.0" layoutY="178.0" onMouseClicked="#gbr" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="GBR" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="180.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="15.0" layoutY="233.0" onMouseClicked="#nb" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="NB" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="235.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="15.0" layoutY="294.0" onMouseClicked="#sepia" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="Sepia" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="290.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="15.0" layoutY="345.0" onMouseClicked="#sobel" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="Sobel" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="345.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="364.0" layoutY="345.0" onMouseClicked="#importImage" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="Import" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="563.0" layoutY="495.0" onMouseClicked="#export" prefHeight="38.0" prefWidth="109.0" ripplerFill="#fca0ad" style="-fx-background-color: #FDC0C9;" text="Encrypt" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="253.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </JFXButton>
+      <JFXTextField fx:id="searchBar" onKeyPressed="#search" focusColor="#c93054" layoutX="320.0" layoutY="495.0" prefHeight="45.0" prefWidth="232.0" promptText="Search..." style="-fx-background-color: #F192A0;" unFocusColor="#bf4171" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="373.0">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </JFXTextField>
+   </children>
+</AnchorPane>
