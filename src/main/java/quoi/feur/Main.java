@@ -13,6 +13,7 @@ import quoi.feur.manager.ImageManager;
 
 import java.io.IOException;
 
+@SuppressWarnings("DataFlowIssue") // pas de warning inutile = développeur heureux
 public class Main extends Application {
     public static Stage primaryStage;
     public static void main(String[] args) {

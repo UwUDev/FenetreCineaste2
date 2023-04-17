@@ -40,6 +40,4 @@ public enum ImageManager {
         images.clear();
         images.addAll(Arrays.asList(gson.fromJson(new FileReader("images.json"), ImageData[].class)));
     }
-
-
 }

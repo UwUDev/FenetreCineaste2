@@ -1,7 +1,12 @@
 package quoi.feur.controller;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -9,17 +14,26 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import quoi.feur.Main;
 import quoi.feur.manager.ImageManager;
 import quoi.feur.struct.ImageData;
+import quoi.feur.utils.CryptoUtils;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static quoi.feur.Main.primaryStage;
+
 public class GalleryController implements Initializable {
+    @SuppressWarnings("DataFlowIssue")
+    private static final Image lockedImageIcon = new Image(Main.class.getResourceAsStream("lock.png"));
 
 
     public ScrollPane scrollPane;
@@ -30,10 +44,10 @@ public class GalleryController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Opened gallery");
 
-        //import css from resources
-        String css = Main.class.getResource("gallery.css").toExternalForm();
-        // apply css
-        scrollPane.getStylesheets().add(css);
+
+        @SuppressWarnings("DataFlowIssue")
+        String css = Main.class.getResource("gallery.css").toExternalForm(); //import css from resources
+        scrollPane.getStylesheets().add(css); // apply css
 
 
         JFXTextField searchBar = new JFXTextField();
@@ -49,7 +63,7 @@ public class GalleryController implements Initializable {
         List<ImageData> images = ImageManager.getInstance().getImages().stream().filter(imageData -> {
             if (filter == null || filter.isEmpty())
                 return true;
-            if(filter.startsWith("#")) {
+            if (filter.startsWith("#")) {
                 for (String tag : imageData.getTags()) {
                     if (tag.toLowerCase().contains(filter.substring(1).toLowerCase()))
                         return true;
@@ -74,7 +88,6 @@ public class GalleryController implements Initializable {
         gridPane.getStyleClass().add("mon-grid-pane");
 
 
-
         int index = 0;
         for (int i = 0; i < rowCount; i++) {
             for (int j = 0; j < columnCount; j++) {
@@ -83,23 +96,150 @@ public class GalleryController implements Initializable {
                 Pane pane = new Pane();  // tuile de l'image et texte
                 pane.setPrefHeight(200);
                 pane.setStyle("-fx-background-color: #FB8092");
-                pane.setPrefWidth(800f/columnCount);
+                pane.setPrefWidth(800f / columnCount);
 
-                Image image = new Image(new File("images/" + images.get(index).getFilename()).toURI().toString());
+                Image image;
+                if (images.get(index).isLocked())
+                    image = lockedImageIcon;
+                else image = new Image(new File("images/" + images.get(index).getFilename()).toURI().toString());
+
+
                 ImageView imageView = new ImageView(image);
                 imageView.setFitHeight(150);
-                imageView.setFitWidth(800f/columnCount);
+                imageView.setFitWidth(800f / columnCount);
                 imageView.setPreserveRatio(true);
                 imageView.setSmooth(true);
                 imageView.setCache(true);
                 pane.getChildren().add(imageView);
 
-                Label label = new Label(images.get(index).getName());
+                Label label;
+                if (images.get(index).isLocked())
+                    label = new Label("🔒");
+                else label = new Label(images.get(index).getName());
                 label.setLayoutY(150);
-                label.setPrefWidth(800f/columnCount);
+                label.setPrefWidth(800f / columnCount);
                 label.setAlignment(javafx.geometry.Pos.CENTER);
 
                 pane.getChildren().add(label);
+
+                if (images.get(index).isLocked()) {
+                    int finalIndex = index;
+                    pane.setOnMouseClicked(event -> {
+                        final Stage dialog = new Stage();
+                        dialog.initModality(Modality.APPLICATION_MODAL);
+                        dialog.initOwner(scrollPane.getScene().getWindow());
+                        dialog.setTitle("Enter password");
+
+
+                        VBox popup = new VBox();
+                        popup.setPrefWidth(300);
+                        popup.setPrefHeight(150);
+
+                        Label label1 = new Label("Enter password");
+                        JFXPasswordField passwordField = new JFXPasswordField();
+                        passwordField.setPromptText("Password");
+                        JFXButton button = new JFXButton("Unlock");
+
+                        button.setOnMouseClicked(e -> {
+                            if (CryptoUtils.isValidPassword(passwordField.getText(), images.get(finalIndex).getHashedPassword())) {
+                                //images.get(finalIndex).setLocked(false);
+                                File inputFile = new File("images/" + images.get(finalIndex).getFilename());
+                                File outputFile = new File("images/" + images.get(finalIndex).getFilename().replace(".locked", ""));
+
+                                try {
+                                    CryptoUtils.decryptFile(passwordField.getText(), inputFile, outputFile);
+                                    inputFile.delete();
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                    System.err.println("Error while decrypting file :(");
+                                }
+
+                                images.get(finalIndex).setHashedPassword(null);
+                                images.get(finalIndex).setFilename(images.get(finalIndex).getFilename().replace(".locked", ""));
+                                ImageManager.getInstance().save();
+
+                                updateGrid(filter);
+                                dialog.close();
+                            }
+                        });
+
+                        popup.getChildren().addAll(label1, passwordField, button);
+
+                        Scene dialogScene = new Scene(popup);
+                        dialog.setScene(dialogScene);
+                        dialog.show();
+                    });
+                } else {
+                    int finalIndex = index;
+                    pane.setOnMouseClicked(event -> {
+                        final Stage dialog = new Stage();
+                        dialog.initModality(Modality.APPLICATION_MODAL);
+                        dialog.initOwner(scrollPane.getScene().getWindow());
+                        dialog.setTitle("Image");
+
+                        VBox popup = new VBox();
+                        popup.setPrefWidth(300);
+                        popup.setPrefHeight(220);
+
+                        JFXButton openBtn = new JFXButton("Open");
+                        JFXButton deleteBtn = new JFXButton("Delete");
+
+                        JFXPasswordField passwordField = new JFXPasswordField();
+                        passwordField.setPromptText("Password");
+
+                        JFXButton encryptBtn = new JFXButton("Encrypt");
+
+                        popup.getChildren().addAll(openBtn, deleteBtn, passwordField, encryptBtn);
+
+                        openBtn.setOnMouseClicked(e -> {
+                            MainController.instance.exportButton.setDisable(false);
+                            System.out.println("File selected : " + images.get(finalIndex).getFilename());
+                            MainController.instance.imageView.setImage(new javafx.scene.image.Image(new File("images/" + images.get(finalIndex).getFilename()).toURI().toString()));
+
+                            dialog.close();
+                            MainController.instance.dialog.close();
+                        });
+
+                        deleteBtn.setOnMouseClicked(e -> {
+                            File file = new File("images/" + images.get(finalIndex).getFilename());
+                            file.delete();
+                            ImageManager.getInstance().getImages().remove(images.get(finalIndex));
+                            updateGrid(filter);
+                            dialog.close();
+
+                            ImageManager.getInstance().save();
+                        });
+
+                        encryptBtn.setOnMouseClicked(e -> {
+                            if (passwordField.getText().isEmpty()) {
+                                System.err.println("Password is empty");
+                                return;
+                            }
+
+                            File inputFile = new File("images/" + images.get(finalIndex).getFilename());
+                            File outputFile = new File("images/" + images.get(finalIndex).getFilename() + ".locked");
+
+                            try {
+                                CryptoUtils.encryptFile(passwordField.getText(), inputFile, outputFile);
+                                inputFile.delete();
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                System.err.println("Error while encrypting file :(");
+                            }
+
+                            images.get(finalIndex).setHashedPassword(CryptoUtils.hashSha256(passwordField.getText()));
+                            images.get(finalIndex).setFilename(images.get(finalIndex).getFilename() + ".locked");
+                            ImageManager.getInstance().save();
+
+                            updateGrid(filter);
+                            dialog.close();
+                        });
+
+                        Scene dialogScene = new Scene(popup);
+                        dialog.setScene(dialogScene);
+                        dialog.show();
+                    });
+                }
 
                 gridPane.add(pane, j, i);
                 index++;

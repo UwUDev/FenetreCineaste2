@@ -23,7 +23,7 @@ public class ImageUtils {
         return SwingFXUtils.toFXImage(bufferedImage, null);
     }
 
-    public static BufferedImage invert(BufferedImage image) {
+    /*public static BufferedImage invert(BufferedImage image) {
         BufferedImage modified = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
         for (int x = 0; x < image.getWidth(); x++) {
             for (int y = 0; y < image.getHeight(); y++) {
@@ -34,7 +34,7 @@ public class ImageUtils {
             }
         }
         return modified;
-    }
+    }*/
 
     public static BufferedImage flipVertical(BufferedImage image) {
         BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());

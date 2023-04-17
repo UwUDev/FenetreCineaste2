@@ -29,6 +29,7 @@ public class MainController implements Initializable {
     public ImageView imageView;
     public JFXTextField searchBar;
     public JFXButton exportButton;
+    public Stage dialog = new Stage();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,6 +62,7 @@ public class MainController implements Initializable {
     }
 
     public void encrypt() {
+        // TODO: 17/04/2023 Encrypt
     }
 
     public void invertX() {
@@ -129,12 +131,13 @@ public class MainController implements Initializable {
         imageView.setImage(ImageUtils.toImage(bufferedImage));
     }
 
-    public void updateWindowsSize(int width, int height) {
+    /*public void updateWindowsSize(int width, int height) {
         System.out.println("New x : " + width + " New y : " + height);
-    }
+    }*/
 
+    @SuppressWarnings("DataFlowIssue")
     public void gallery() throws IOException {
-        final Stage dialog = new Stage();
+        dialog = new Stage();
         Parent root = FXMLLoader.load(Main.class.getResource("gallery.fxml"));
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(primaryStage);
