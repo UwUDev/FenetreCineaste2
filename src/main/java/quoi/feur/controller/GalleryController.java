@@ -59,6 +59,7 @@ public class GalleryController implements Initializable {
         updateGrid(null);
     }
 
+    @SuppressWarnings("DataFlowIssue")
     public void updateGrid(String filter) {
         List<ImageData> images = ImageManager.getInstance().getImages().stream().filter(imageData -> {
             if (filter == null || filter.isEmpty())
@@ -125,22 +126,27 @@ public class GalleryController implements Initializable {
                 if (images.get(index).isLocked()) {
                     int finalIndex = index;
                     pane.setOnMouseClicked(event -> {
-                        final Stage dialog = new Stage();
+                        Stage dialog = new Stage();
+
+                        Parent root = null;
+                        try {
+                            root = FXMLLoader.load(Main.class.getResource("decrypt_popup.fxml"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         dialog.initModality(Modality.APPLICATION_MODAL);
-                        dialog.initOwner(scrollPane.getScene().getWindow());
-                        dialog.setTitle("Enter password");
+                        dialog.initOwner(primaryStage);
+                        Scene dialogScene = new Scene(root, 300, 150);
+                        dialog.setResizable(false);
+                        dialog.getIcons().add(new Image(Main.class.getResourceAsStream("icon.png")));
+                        dialog.setTitle("Gallery");
+                        dialog.setScene(dialogScene);
 
+                        Label invalid = (Label) root.lookup("#invalid");
+                        JFXPasswordField passwordField = (JFXPasswordField) root.lookup("#password");
+                        JFXButton decryptBtn = (JFXButton) root.lookup("#decrypt");
 
-                        VBox popup = new VBox();
-                        popup.setPrefWidth(300);
-                        popup.setPrefHeight(150);
-
-                        Label label1 = new Label("Enter password");
-                        JFXPasswordField passwordField = new JFXPasswordField();
-                        passwordField.setPromptText("Password");
-                        JFXButton button = new JFXButton("Unlock");
-
-                        button.setOnMouseClicked(e -> {
+                        decryptBtn.setOnMouseClicked(e -> {
                             if (CryptoUtils.isValidPassword(passwordField.getText(), images.get(finalIndex).getHashedPassword())) {
                                 //images.get(finalIndex).setLocked(false);
                                 File inputFile = new File("images/" + images.get(finalIndex).getFilename());
@@ -148,6 +154,7 @@ public class GalleryController implements Initializable {
 
                                 try {
                                     CryptoUtils.decryptFile(passwordField.getText(), inputFile, outputFile);
+                                    //noinspection ResultOfMethodCallIgnored
                                     inputFile.delete();
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
@@ -160,36 +167,37 @@ public class GalleryController implements Initializable {
 
                                 updateGrid(filter);
                                 dialog.close();
-                            }
+                            } else invalid.setVisible(true);
                         });
 
-                        popup.getChildren().addAll(label1, passwordField, button);
-
-                        Scene dialogScene = new Scene(popup);
-                        dialog.setScene(dialogScene);
                         dialog.show();
                     });
                 } else {
                     int finalIndex = index;
                     pane.setOnMouseClicked(event -> {
-                        final Stage dialog = new Stage();
+                        Stage dialog = new Stage();
+
+                        Parent root = null;
+                        try {
+                            root = FXMLLoader.load(Main.class.getResource("file_actions.fxml"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         dialog.initModality(Modality.APPLICATION_MODAL);
-                        dialog.initOwner(scrollPane.getScene().getWindow());
-                        dialog.setTitle("Image");
+                        dialog.initOwner(primaryStage);
+                        Scene dialogScene = new Scene(root, 300, 200);
+                        dialog.setResizable(false);
+                        dialog.getIcons().add(new Image(Main.class.getResourceAsStream("icon.png")));
+                        dialog.setTitle("Gallery");
+                        dialog.setScene(dialogScene);
 
-                        VBox popup = new VBox();
-                        popup.setPrefWidth(300);
-                        popup.setPrefHeight(220);
+                        JFXButton openBtn = (JFXButton) root.lookup("#open");
+                        JFXButton deleteBtn = (JFXButton) root.lookup("#delete");
 
-                        JFXButton openBtn = new JFXButton("Open");
-                        JFXButton deleteBtn = new JFXButton("Delete");
+                        JFXPasswordField passwordField = (JFXPasswordField) root.lookup("#password");
 
-                        JFXPasswordField passwordField = new JFXPasswordField();
-                        passwordField.setPromptText("Password");
+                        JFXButton encryptBtn = (JFXButton) root.lookup("#encrypt");
 
-                        JFXButton encryptBtn = new JFXButton("Encrypt");
-
-                        popup.getChildren().addAll(openBtn, deleteBtn, passwordField, encryptBtn);
 
                         openBtn.setOnMouseClicked(e -> {
                             MainController.instance.exportButton.setDisable(false);
@@ -234,9 +242,6 @@ public class GalleryController implements Initializable {
                             updateGrid(filter);
                             dialog.close();
                         });
-
-                        Scene dialogScene = new Scene(popup);
-                        dialog.setScene(dialogScene);
                         dialog.show();
                     });
                 }

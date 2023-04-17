@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="150.0" prefWidth="300.0" style="-fx-background-color: #FB8092;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <JFXPasswordField fx:id="password" alignment="CENTER" focusColor="#c93054" layoutX="16.0" layoutY="49.0" prefHeight="37.0" prefWidth="269.0" unFocusColor="#bf4171" />
+      <JFXButton fx:id="decrypt" layoutX="100.0" layoutY="102.0" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #FDC0C9;" text="Decrypt">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </JFXButton>
+      <Label fx:id="invalid" alignment="CENTER" layoutX="38.0" layoutY="14.0" prefHeight="37.0" prefWidth="225.0" text="Invalid password" textFill="#c93054" visible="false">
+         <font>
+            <Font name="System Bold Italic" size="19.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
