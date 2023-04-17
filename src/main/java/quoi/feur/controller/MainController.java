@@ -18,11 +18,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.function.Function;
 
 import static quoi.feur.Main.primaryStage;
 
+@SuppressWarnings("DataFlowIssue")
 public class MainController implements Initializable {
     public static MainController instance;
 
