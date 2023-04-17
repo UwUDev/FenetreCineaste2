@@ -26,19 +26,6 @@ public class ImageUtils {
         return SwingFXUtils.toFXImage(bufferedImage, null);
     }
 
-    /*public static BufferedImage invert(BufferedImage image) {
-        BufferedImage modified = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                int rgb = image.getRGB(x, y);
-                Color color = new Color(rgb, true);
-                color = new Color(255 - color.getRed(), 255 - color.getGreen(), 255 - color.getBlue());
-                modified.setRGB(x, y, color.getRGB());
-            }
-        }
-        return modified;
-    }*/
-
     public static BufferedImage flipVertical(BufferedImage image) {
         BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
         for (int x = 0; x < image.getWidth(); x++) {
@@ -89,6 +76,7 @@ public class ImageUtils {
         return modified;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public static BufferedImage sobel(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -124,6 +112,7 @@ public class ImageUtils {
                                 (gy[2][1] * getRed(image.getRGB(x, y + 1))) +
                                 (gy[2][2] * getRed(image.getRGB(x + 1, y + 1)))
                 );
+
                 int magnitude = (int) Math.sqrt(pixelX * pixelX + pixelY * pixelY);
 
                 sobelImage.setRGB(x, y, getRGB(magnitude, magnitude/2, (int) (magnitude/1.8f)));

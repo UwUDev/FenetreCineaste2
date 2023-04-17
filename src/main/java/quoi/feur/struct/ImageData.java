@@ -13,11 +13,6 @@ public @Data class ImageData {
     private final List<String> tags = new ArrayList<>();
     private String hashedPassword;
 
-    /*public ImageData(String name, String filename) {
-        this.name = name;
-        this.filename = filename;
-    }*/
-
     public boolean isLocked() {
         return hashedPassword != null;
     }

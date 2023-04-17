@@ -21,7 +21,6 @@ import quoi.feur.manager.ImageManager;
 import quoi.feur.struct.ImageData;
 import quoi.feur.utils.CryptoUtils;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -37,7 +36,6 @@ public class GalleryController implements Initializable {
 
 
     public ScrollPane scrollPane;
-    private GridPane gridPane = new GridPane();
     VBox mainPane = new VBox();
 
     @Override
@@ -59,7 +57,7 @@ public class GalleryController implements Initializable {
         updateGrid(null);
     }
 
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"DataFlowIssue", "ResultOfMethodCallIgnored"})
     public void updateGrid(String filter) {
         List<ImageData> images = ImageManager.getInstance().getImages().stream().filter(imageData -> {
             if (filter == null || filter.isEmpty())
@@ -79,7 +77,7 @@ public class GalleryController implements Initializable {
         int columnCount = 5;
         int rowCount = itemCount / columnCount + 1;
 
-        gridPane = new GridPane();
+        GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
         gridPane.setVgap(10);
         gridPane.setStyle("-fx-background-color: #FB8092");
@@ -128,7 +126,7 @@ public class GalleryController implements Initializable {
                     pane.setOnMouseClicked(event -> {
                         Stage dialog = new Stage();
 
-                        Parent root = null;
+                        Parent root;
                         try {
                             root = FXMLLoader.load(Main.class.getResource("decrypt_popup.fxml"));
                         } catch (IOException e) {
@@ -176,7 +174,7 @@ public class GalleryController implements Initializable {
                     pane.setOnMouseClicked(event -> {
                         Stage dialog = new Stage();
 
-                        Parent root = null;
+                        Parent root;
                         try {
                             root = FXMLLoader.load(Main.class.getResource("file_actions.fxml"));
                         } catch (IOException e) {
