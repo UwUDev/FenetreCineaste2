@@ -8,7 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -19,7 +18,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 import static quoi.feur.Main.primaryStage;
 
@@ -27,7 +28,6 @@ public class MainController implements Initializable {
     public static MainController instance;
 
     public ImageView imageView;
-    public JFXTextField searchBar;
     public JFXButton exportButton;
     public Stage dialog = new Stage();
 
@@ -59,10 +59,6 @@ public class MainController implements Initializable {
         if (ImageUtils.hasHistory()) {
             imageView.setImage(ImageUtils.toImage(ImageUtils.popHistory()));
         }
-    }
-
-    public void encrypt() {
-        // TODO: 17/04/2023 Encrypt
     }
 
     public void invertX() {
@@ -131,10 +127,6 @@ public class MainController implements Initializable {
         imageView.setImage(ImageUtils.toImage(bufferedImage));
     }
 
-    /*public void updateWindowsSize(int width, int height) {
-        System.out.println("New x : " + width + " New y : " + height);
-    }*/
-
     @SuppressWarnings("DataFlowIssue")
     public void gallery() throws IOException {
         dialog = new Stage();
@@ -150,11 +142,5 @@ public class MainController implements Initializable {
     }
 
     public void export() {
-    }
-
-    public void search(KeyEvent keyEvent) {
-        if (keyEvent.getCode().toString().equals("ENTER") || keyEvent.getCode().toString().equals("RETURN")) {
-            System.out.println("Text : " + searchBar.getText());
-        }
     }
 }

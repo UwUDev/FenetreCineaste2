@@ -148,7 +148,6 @@ public class GalleryController implements Initializable {
 
                         decryptBtn.setOnMouseClicked(e -> {
                             if (CryptoUtils.isValidPassword(passwordField.getText(), images.get(finalIndex).getHashedPassword())) {
-                                //images.get(finalIndex).setLocked(false);
                                 File inputFile = new File("images/" + images.get(finalIndex).getFilename());
                                 File outputFile = new File("images/" + images.get(finalIndex).getFilename().replace(".locked", ""));
 

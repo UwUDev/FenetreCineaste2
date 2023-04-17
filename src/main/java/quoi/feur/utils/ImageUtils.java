@@ -3,8 +3,11 @@ package quoi.feur.utils;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,5 +168,13 @@ public class ImageUtils {
             }
         }
         return modified;
+    }
+
+    public static void saveImage(BufferedImage image, String path) {
+        try {
+            ImageIO.write(image, "png", new File(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
