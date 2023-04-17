@@ -1,25 +1,34 @@
 package quoi.feur.controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import quoi.feur.Main;
 import quoi.feur.utils.ImageUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static quoi.feur.Main.primaryStage;
 
 public class MainController implements Initializable {
     public static MainController instance;
 
     public ImageView imageView;
     public JFXTextField searchBar;
+    public JFXButton exportButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -27,7 +36,7 @@ public class MainController implements Initializable {
         System.out.println("Loaded :)");
     }
 
-    public void importImage(MouseEvent mouseEvent) {
+    public void importImage() {
         System.out.println("Importing image");
 
         FileChooser fileChooser = new FileChooser();
@@ -35,12 +44,13 @@ public class MainController implements Initializable {
         fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
+            exportButton.setDisable(false);
             System.out.println("File selected : " + file.getName());
             imageView.setImage(new javafx.scene.image.Image(file.toURI().toString()));
         }
     }
 
-    public void undo(MouseEvent mouseEvent) {
+    public void undo() {
         Image image = imageView.getImage();
         if (image == null)
             return;
@@ -50,10 +60,10 @@ public class MainController implements Initializable {
         }
     }
 
-    public void encrypt(MouseEvent mouseEvent) {
+    public void encrypt() {
     }
 
-    public void invertX(MouseEvent mouseEvent) {
+    public void invertX() {
         Image image = imageView.getImage();
         if (image == null)
             return;
@@ -64,7 +74,7 @@ public class MainController implements Initializable {
         imageView.setImage(ImageUtils.toImage(bufferedImage));
     }
 
-    public void invertY(MouseEvent mouseEvent) {
+    public void invertY() {
         Image image = imageView.getImage();
         if (image == null)
             return;
@@ -75,7 +85,7 @@ public class MainController implements Initializable {
         imageView.setImage(ImageUtils.toImage(bufferedImage));
     }
 
-    public void gbr(MouseEvent mouseEvent) {
+    public void gbr() {
         Image image = imageView.getImage();
         if (image == null)
             return;
@@ -86,7 +96,7 @@ public class MainController implements Initializable {
         imageView.setImage(ImageUtils.toImage(bufferedImage));
     }
 
-    public void nb(MouseEvent mouseEvent) {
+    public void nb() {
         Image image = imageView.getImage();
         if (image == null)
             return;
@@ -97,7 +107,7 @@ public class MainController implements Initializable {
         imageView.setImage(ImageUtils.toImage(bufferedImage));
     }
 
-    public void sepia(MouseEvent mouseEvent) {
+    public void sepia() {
         Image image = imageView.getImage();
         if (image == null)
             return;
@@ -108,7 +118,7 @@ public class MainController implements Initializable {
         imageView.setImage(ImageUtils.toImage(bufferedImage));
     }
 
-    public void sobel(MouseEvent mouseEvent) {
+    public void sobel() {
         Image image = imageView.getImage();
         if (image == null)
             return;
@@ -123,7 +133,20 @@ public class MainController implements Initializable {
         System.out.println("New x : " + width + " New y : " + height);
     }
 
-    public void export(MouseEvent mouseEvent) {
+    public void gallery() throws IOException {
+        final Stage dialog = new Stage();
+        Parent root = FXMLLoader.load(Main.class.getResource("gallery.fxml"));
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(primaryStage);
+        Scene dialogScene = new Scene(root, 800, 500);
+        dialog.setResizable(false);
+        dialog.getIcons().add(new Image(Main.class.getResourceAsStream("icon.png")));
+        dialog.setTitle("Gallery");
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
+    public void export() {
     }
 
     public void search(KeyEvent keyEvent) {

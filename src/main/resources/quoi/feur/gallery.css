@@ -1,0 +1,33 @@
+.scroll-pane {
+    -fx-background-color: #FB8092;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+    -fx-opacity: 0.8;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #FDC0C9; /* Couleur principale du Material Design */
+    -fx-background-radius: 10; /* Arrondir les bords de la barre de défilement */
+    -fx-border-radius: 10; /* Assurez-vous que la bordure a également des bords arrondis */
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-padding: 0; /* Supprimer l'espace autour des boutons d'incrémentation et de décrémentation */
+    -fx-background-color: transparent; /* Rendre le bouton d'incrémentation et de décrémentation transparent */
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-min-width: 10; /* Largeur de la barre de défilement verticale */
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-min-height: 10; /* Hauteur de la barre de défilement horizontale */
+}
+
+.mon-grid-pane {
+    -fx-background-color: #FB8092;
+    -fx-pref-width: 100%;
+}
