@@ -34,8 +34,8 @@ public class MainController implements Initializable {
     public Stage dialog = new Stage();
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        instance = this;
+    public void initialize(URL location, ResourceBundle resources) { // fontion appelée au lancement de l'application après le chargement du FXML
+        instance = this; // on stocke l'instance de la classe pour pouvoir y accéder depuis d'autres classes
         System.out.println("Loaded :)");
     }
 
@@ -49,7 +49,7 @@ public class MainController implements Initializable {
         if (file != null) {
             exportButton.setDisable(false);
             System.out.println("File selected : " + file.getName());
-            imageView.setImage(new javafx.scene.image.Image(file.toURI().toString()));
+            imageView.setImage(new javafx.scene.image.Image(file.toURI().toString())); // on affiche l'image dans l'ImageView
         }
     }
 
