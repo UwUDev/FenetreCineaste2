@@ -34,12 +34,13 @@ public class CryptoUtils {
     public static boolean isValidPassword(String password, String hash) { // fonction qui permet de vérifier si un mot de passe est valide
         return hashSha256(password).equals(hash); // on vérifie si le hash du mot de passe est égal au hash du mot de passe
     }
-    @SneakyThrows
-    public static SecretKey getKeyFromPassword(String password) {
 
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), leSel.getBytes(), 65536, 256);
-        return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+    @SneakyThrows
+    public static SecretKey getKeyFromPassword(String password) { // fonction qui permet de générer une clé à partir d'un mot de passe
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256"); // on crée un SecretKeyFactory en utilisant l'algorithme PBKDF2WithHmacSHA256 (PBKDF2 = Password-Based Key Derivation Function 2 et HMAC = Keyed-Hash Message Authentication Code)
+        // on a préféré utiliser PBKDF2WithHmacSHA256 plutôt que PBKDF2WithHmacSHA1 car SHA1 est considéré comme obsolète et SHA256 est plus sécurisé
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), leSel.getBytes(), 65536, 256); // on crée un KeySpec en utilisant le mot de passe, le sel et 65536 itérations
+        return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES"); // on retourne une SecretKeySpec en utilisant la clé générée par le SecretKeyFactory
     }
 
     public static IvParameterSpec generateIv() { // fonction qui permet de générer un vecteur d'initialisation
@@ -57,10 +58,9 @@ public class CryptoUtils {
         try (FileInputStream inputStream = new FileInputStream(inputFile); // on crée un FileInputStream pour lire le fichier d'entrée
              FileOutputStream outputStream = new FileOutputStream(outputFile)) { // on crée un FileOutputStream pour écrire dans le fichier de sortie
 
-            // Écrire l'IV au début du fichier chiffré
-            outputStream.write(ivSpec.getIV());
+            outputStream.write(ivSpec.getIV()); // on écrit le vecteur d'initialisation dans le fichier de sortie
 
-            gloubiBoulga(cipher, inputStream, outputStream);
+            processFile(cipher, inputStream, outputStream); // on chiffre le fichier
         }
     }
 
@@ -78,7 +78,7 @@ public class CryptoUtils {
 
             cipher.init(Cipher.DECRYPT_MODE, getKeyFromPassword(password), ivSpec); // on initialise le Cipher en mode déchiffrement, en utilisant la clé générée à partir du mot de passe et le vecteur d'initialisation
 
-            gloubiBoulga(cipher, inputStream, outputStream);
+            processFile(cipher, inputStream, outputStream); // on déchiffre le fichier
         }
     }
 

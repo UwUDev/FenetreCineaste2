@@ -14,61 +14,70 @@ import java.util.List;
 public class ImageUtils {
 
     private static final List<BufferedImage> history = new ArrayList<>();
-    public static BufferedImage toBufferedImage(javafx.scene.image.Image image) {
-        int w = (int) image.getWidth();
-        int h = (int) image.getHeight();
-        BufferedImage bufImageARGB = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        SwingFXUtils.fromFXImage(image, bufImageARGB);
-        return bufImageARGB;
+
+    public static BufferedImage toBufferedImage(Image image) { // fonction qui permet de convertir une Image en BufferedImage
+        int w = (int) image.getWidth(); // on récupère la largeur de l'image
+        int h = (int) image.getHeight(); // on récupère la hauteur de l'image
+        BufferedImage bufImageARGB = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB); // on crée une BufferedImage de type ARGB
+        SwingFXUtils.fromFXImage(image, bufImageARGB); // on convertit l'image
+        return bufImageARGB; // on retourne l'image convertie
     }
 
     public static Image toImage(BufferedImage bufferedImage) { // fonction qui permet de convertir une BufferedImage en Image
         return SwingFXUtils.toFXImage(bufferedImage, null); // on convertit l'image
     }
 
-    public static BufferedImage flipVertical(BufferedImage image) {
-        BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                flipped.setRGB(x, y, image.getRGB(x, image.getHeight() - y - 1));
+    public static BufferedImage flipVertical(BufferedImage image) { // fonction qui permet de retourner verticalement une BufferedImage
+        int width = image.getWidth(); // on récupère la largeur de l'image
+        int height = image.getHeight(); // on récupère la hauteur de l'image
+        BufferedImage flipped = new BufferedImage(width, height, image.getType()); // on crée une nouvelle BufferedImage de la même taille et du même type que l'image d'origine
+        for (int x = 0; x < width; x++) { // on parcourt l'image en largeur
+            for (int y = 0; y < height; y++) {  // on parcourt l'image en hauteur
+                flipped.setRGB(x, y, image.getRGB(x, height - y - 1)); // on retourne l'image verticalement
             }
         }
         return flipped; // on retourne l'image retournée verticalement
     }
 
-    public static BufferedImage flipHorizontal(BufferedImage image) {
-        BufferedImage flipped = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                flipped.setRGB(x, y, image.getRGB(image.getWidth() - x - 1, y));
+    public static BufferedImage flipHorizontal(BufferedImage image) { // fonction qui permet de retourner horizontalement une BufferedImage
+        int width = image.getWidth(); // on récupère la largeur de l'image
+        int height = image.getHeight(); // on récupère la hauteur de l'image
+        BufferedImage flipped = new BufferedImage(width, height, image.getType()); // on crée une nouvelle BufferedImage de la même taille et du même type que l'image d'origine
+        for (int x = 0; x < width; x++) { // on parcourt l'image en largeur
+            for (int y = 0; y < height; y++) { // on parcourt l'image en hauteur
+                flipped.setRGB(x, y, image.getRGB(width - x - 1, y)); // on retourne l'image horizontalement
             }
         }
         return flipped; // on retourne l'image retournée horizontalement
     }
 
-    public static BufferedImage RGBtoGBR(BufferedImage image) {
-        BufferedImage modified = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                int rgb = image.getRGB(x, y);
-                Color color = new Color(rgb, true);
-                color = new Color(color.getGreen(), color.getBlue(), color.getRed());
-                modified.setRGB(x, y, color.getRGB());
+    public static BufferedImage RGBtoGBR(BufferedImage image) { // fonction qui permet de convertir une BufferedImage de type RGB en GBR
+        int width = image.getWidth(); // on récupère la largeur de l'image
+        int height = image.getHeight(); // on récupère la hauteur de l'image
+        BufferedImage modified = new BufferedImage(width, height, image.getType()); // on crée une nouvelle BufferedImage de la même taille et du même type que l'image d'origine
+        for (int x = 0; x < width; x++) { // on parcourt l'image en largeur
+            for (int y = 0; y < height; y++) { // on parcourt l'image en hauteur
+                int rgb = image.getRGB(x, y); // on récupère la couleur de l'image à la position x, y
+                Color color = new Color(rgb, true); // on crée un objet Color avec la couleur récupérée
+                color = new Color(color.getGreen(), color.getBlue(), color.getRed()); // on décale les couleurs de l'image
+                modified.setRGB(x, y, color.getRGB()); // on applique la nouvelle couleur à l'image
             }
         }
         return modified; // on retourne l'image convertie
     }
 
-    public static BufferedImage sepia(BufferedImage image) {
-        BufferedImage modified = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                int rgb = image.getRGB(x, y);
-                Color color = new Color(rgb, true);
-                color = new Color(
+    public static BufferedImage sepia(BufferedImage image) { // fonction qui permet d'appliquer un filtre sépia à une BufferedImage
+        int width = image.getWidth(); // on récupère la largeur de l'image
+        int height = image.getHeight(); // on récupère la hauteur de l'image
+        BufferedImage modified = new BufferedImage(width, height, image.getType()); // on crée une nouvelle BufferedImage de la même taille et du même type que l'image d'origine
+        for (int x = 0; x < width; x++) { // on parcourt l'image en largeur
+            for (int y = 0; y < height; y++) { // on parcourt l'image en hauteur
+                int rgb = image.getRGB(x, y); // on récupère la couleur de l'image à la position x, y
+                Color color = new Color(rgb, true); // on crée un objet Color avec la couleur récupérée
+                color = new Color( // on applique la formule de conversion en sépia
                         Math.min(255, (int) (0.393 * color.getRed() + 0.769 * color.getGreen() + 0.189 * color.getBlue())),
                         Math.min(255, (int) (0.349 * color.getRed() + 0.686 * color.getGreen() + 0.168 * color.getBlue())),
-                        Math.min(255, (int) (0.272 * color.getRed() + 0.134 * color.getGreen() + 0.131 * color.getBlue()))
+                        Math.min(255, (int) (0.272 * color.getRed() + 0.534 * color.getGreen() + 0.131 * color.getBlue()))
                 );
                 modified.setRGB(x, y, color.getRGB()); // on applique la nouvelle couleur à l'image
             }
@@ -161,20 +170,6 @@ public class ImageUtils {
         return history.remove(history.size() - 1); // on supprime la dernière image de l'historique et on la retourne
     }
 
-
-    public static BufferedImage blackAndWhite(BufferedImage bufferedImage) {
-        BufferedImage modified = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), bufferedImage.getType());
-        for (int x = 0; x < bufferedImage.getWidth(); x++) {
-            for (int y = 0; y < bufferedImage.getHeight(); y++) {
-                int rgb = bufferedImage.getRGB(x, y);
-                Color color = new Color(rgb, true);
-                int gray = (int) (0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue());
-                color = new Color(gray, gray, gray);
-                modified.setRGB(x, y, color.getRGB());
-            }
-        }
-        return modified;
-    }
 
     public static void saveImage(BufferedImage image, String path) { // fonction qui permet de sauvegarder une image
         try {

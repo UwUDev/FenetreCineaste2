@@ -12,6 +12,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import quoi.feur.Main;
+import quoi.feur.manager.ImageManager;
+import quoi.feur.struct.ImageData;
 import quoi.feur.utils.ImageUtils;
 
 import java.awt.image.BufferedImage;
@@ -39,110 +41,103 @@ public class MainController implements Initializable {
         System.out.println("Loaded :)");
     }
 
-    public void importImage() {
-        System.out.println("Importing image");
+    private void processImage(Function<BufferedImage, BufferedImage> operation) { // fonction qui permet de traiter l'image
+        Image image = imageView.getImage(); // on récupère l'image dans l'ImageView que l'on manipule actuellement
+        if (image == null) { // si l'image est null, on ne fait rien
+            return;
+        }
+        BufferedImage bufferedImage = ImageUtils.toBufferedImage(image); // on convertit l'image en BufferedImage
+        ImageUtils.addToHistory(bufferedImage); // on ajoute l'image à l'historique
+        bufferedImage = operation.apply(bufferedImage); // on applique l'opération sur l'image
+        imageView.setImage(ImageUtils.toImage(bufferedImage)); // on convertit l'image en Image et on l'affiche dans l'ImageView
+    }
 
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File("images/"));
-        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
-        File file = fileChooser.showOpenDialog(null);
-        if (file != null) {
-            exportButton.setDisable(false);
+    public void importImage() { // fonction qui permet d'importer une image
+        System.out.println("Importing image");
+        FileChooser fileChooser = new FileChooser(); // on crée un FileChooser
+        fileChooser.setInitialDirectory(new File("images/")); // on définit le dossier de départ
+        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")); // on définit les extensions de fichiers acceptées
+        File file = fileChooser.showOpenDialog(null); // on ouvre la fenêtre de sélection de fichier
+        if (file != null) { // si un fichier a été sélectionné
+            exportButton.setDisable(false); // on active le bouton d'export
             System.out.println("File selected : " + file.getName());
             imageView.setImage(new javafx.scene.image.Image(file.toURI().toString())); // on affiche l'image dans l'ImageView
         }
     }
 
-    public void undo() {
-        Image image = imageView.getImage();
-        if (image == null)
-            return;
-
-        if (ImageUtils.hasHistory()) {
-            imageView.setImage(ImageUtils.toImage(ImageUtils.popHistory()));
+    public void undo() { // fonction qui permet d'annuler une opération
+        if (ImageUtils.hasHistory()) { // si l'historique n'est pas vide
+            imageView.setImage(ImageUtils.toImage(ImageUtils.popHistory())); // on récupère l'image précédente et on l'affiche dans l'ImageView
         }
     }
 
     public void invertX() {
-        Image image = imageView.getImage();
-        if (image == null)
-            return;
-
-        BufferedImage bufferedImage = ImageUtils.toBufferedImage(image);
-        ImageUtils.addToHistory(bufferedImage);
-        bufferedImage = ImageUtils.flipVertical(bufferedImage);
-        imageView.setImage(ImageUtils.toImage(bufferedImage));
+        processImage(ImageUtils::flipVertical);
     }
 
     public void invertY() {
-        Image image = imageView.getImage();
-        if (image == null)
-            return;
-
-        BufferedImage bufferedImage = ImageUtils.toBufferedImage(image);
-        ImageUtils.addToHistory(bufferedImage);
-        bufferedImage = ImageUtils.flipHorizontal(bufferedImage);
-        imageView.setImage(ImageUtils.toImage(bufferedImage));
+        processImage(ImageUtils::flipHorizontal);
     }
 
     public void gbr() {
-        Image image = imageView.getImage();
-        if (image == null)
-            return;
-
-        BufferedImage bufferedImage = ImageUtils.toBufferedImage(image);
-        ImageUtils.addToHistory(bufferedImage);
-        bufferedImage = ImageUtils.RGBtoGBR(bufferedImage);
-        imageView.setImage(ImageUtils.toImage(bufferedImage));
+        processImage(ImageUtils::RGBtoGBR);
     }
 
     public void nb() {
-        Image image = imageView.getImage();
-        if (image == null)
-            return;
-
-        BufferedImage bufferedImage = ImageUtils.toBufferedImage(image);
-        ImageUtils.addToHistory(bufferedImage);
-        bufferedImage = ImageUtils.blackAndWhite(bufferedImage);
-        imageView.setImage(ImageUtils.toImage(bufferedImage));
+        processImage(ImageUtils::blackAndWhite);
     }
 
     public void sepia() {
-        Image image = imageView.getImage();
-        if (image == null)
-            return;
-
-        BufferedImage bufferedImage = ImageUtils.toBufferedImage(image);
-        ImageUtils.addToHistory(bufferedImage);
-        bufferedImage = ImageUtils.sepia(bufferedImage);
-        imageView.setImage(ImageUtils.toImage(bufferedImage));
+        processImage(ImageUtils::sepia);
     }
 
     public void sobel() {
-        Image image = imageView.getImage();
-        if (image == null)
-            return;
-
-        BufferedImage bufferedImage = ImageUtils.toBufferedImage(image);
-        ImageUtils.addToHistory(bufferedImage);
-        bufferedImage = ImageUtils.sobel(bufferedImage);
-        imageView.setImage(ImageUtils.toImage(bufferedImage));
+        processImage(ImageUtils::sobel);
     }
 
-    @SuppressWarnings("DataFlowIssue")
-    public void gallery() throws IOException {
-        dialog = new Stage();
-        Parent root = FXMLLoader.load(Main.class.getResource("gallery.fxml"));
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(primaryStage);
-        Scene dialogScene = new Scene(root, 800, 500);
-        dialog.setResizable(false);
-        dialog.getIcons().add(new Image(Main.class.getResourceAsStream("icon.png")));
-        dialog.setTitle("Gallery");
-        dialog.setScene(dialogScene);
-        dialog.show();
+    public void gallery() throws IOException { // fonction qui permet d'ouvrir la fenêtre de la galerie
+        dialog = new Stage(); // on crée une nouvelle fenêtre
+        Parent root = FXMLLoader.load(Main.class.getResource("gallery.fxml")); // on charge le FXML de la fenêtre
+        dialog.initModality(Modality.APPLICATION_MODAL); // on définit le type de fenêtre
+        dialog.initOwner(primaryStage); // on définit la fenêtre parente
+        Scene dialogScene = new Scene(root, 800, 500); // on définit la scène de la fenêtre ainsi que sa taille
+        dialog.setResizable(false); // on définit si la fenêtre est redimensionnable
+        dialog.getIcons().add(new Image(Main.class.getResourceAsStream("icon.png"))); // on définit l'icône de la fenêtre
+        dialog.setTitle("Gallery"); // on définit le titre de la fenêtre
+        dialog.setScene(dialogScene); // on définit la scène de la fenêtre
+        dialog.show(); // on affiche la fenêtre
     }
 
-    public void export() {
+    public void export() throws IOException { // fonction qui permet d'exporter l'image
+        dialog = new Stage(); // on crée une nouvelle fenêtre
+        Parent root = FXMLLoader.load(Main.class.getResource("export.fxml")); // on charge le FXML de la fenêtre
+
+        dialog.initModality(Modality.APPLICATION_MODAL); // on définit le type de fenêtre
+        dialog.initOwner(primaryStage); // on définit la fenêtre parente
+        Scene dialogScene = new Scene(root, 425, 225); // on définit la scène de la fenêtre ainsi que sa taille
+        dialog.setResizable(false); // on définit si la fenêtre est redimensionnable
+        dialog.setTitle("Export"); // on définit le titre de la fenêtre
+        JFXTextField name = (JFXTextField) dialogScene.lookup("#nameField"); // on récupère le champ de texte du nom
+        JFXTextField tag = (JFXTextField) dialogScene.lookup("#tagsField"); // on récupère le champ de texte des tags
+        JFXButton buttonAccept = (JFXButton) dialogScene.lookup("#save"); // on récupère le bouton d'export
+
+        buttonAccept.setOnMouseClicked(event -> { // on définit l'action du bouton d'export
+            System.out.println("Exporting image");
+            String imgName = UUID.randomUUID().toString().substring(0, 8); // on génère un nom aléatoire pour l'image
+            ImageUtils.saveImage(ImageUtils.toBufferedImage(imageView.getImage()), "images/" + imgName); // on sauvegarde l'image dans le dossier images
+            ImageData exportImage = new ImageData(name.getText(), imgName); // on crée une nouvelle ImageData
+            ImageManager.getInstance().addImage(exportImage); // on ajoute l'image à la liste des images
+            if (!tag.getText().isEmpty()) { // si le champ de texte des tags n'est pas vide
+                exportImage.getTags().addAll(Arrays.asList(tag.getText().split(" "))); // on ajoute les tags à l'image
+            }
+            ImageManager.getInstance().save(); // on sauvegarde la liste des images
+            dialog.close(); // on ferme la fenêtre
+        });
+
+        ImageManager.getInstance().save(); // on sauvegarde la liste des images
+
+        dialog.setScene(dialogScene); // on définit la scène de la fenêtre
+        dialog.show(); // on affiche la fenêtre
     }
 }
+
