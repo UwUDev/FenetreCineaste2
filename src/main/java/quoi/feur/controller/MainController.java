@@ -131,10 +131,9 @@ public class MainController implements Initializable {
                 exportImage.getTags().addAll(Arrays.asList(tag.getText().split(" "))); // on ajoute les tags à l'image
             }
             ImageManager.getInstance().save(); // on sauvegarde la liste des images
+            ImageManager.getInstance().displayDatabaseContent(); //afichage DB
             dialog.close(); // on ferme la fenêtre
         });
-
-        ImageManager.getInstance().save(); // on sauvegarde la liste des images
 
         dialog.setScene(dialogScene); // on définit la scène de la fenêtre
         dialog.show(); // on affiche la fenêtre

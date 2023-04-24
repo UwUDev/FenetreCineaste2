@@ -152,6 +152,8 @@ public class GalleryController implements Initializable {
                                     CryptoUtils.decryptFile(passwordField.getText(), inputFile, outputFile); // on déchiffre le fichier
                                     //noinspection ResultOfMethodCallIgnored
                                     inputFile.delete(); // on supprime le fichier chiffré
+                                    ImageManager.getInstance().deleteImage(images.get(finalIndex).getFilename()); // on supprime de la DB
+
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                     System.err.println("Error while decrypting file :(");
@@ -208,6 +210,7 @@ public class GalleryController implements Initializable {
                             File file = new File("images/" + images.get(finalIndex).getFilename()); // on récupère le fichier à supprimer
                             file.delete(); // on supprime le fichier
                             ImageManager.getInstance().getImages().remove(images.get(finalIndex)); // on supprime l'image de la liste
+                            ImageManager.getInstance().deleteImage(images.get(finalIndex).getFilename()); // on supprime de la DB
                             updateGrid(filter); // on met à jour la grille
                             dialog.close(); // on ferme le popup
 
@@ -225,6 +228,7 @@ public class GalleryController implements Initializable {
 
                             try {
                                 CryptoUtils.encryptFile(passwordField.getText(), inputFile, outputFile); // on chiffre le fichier
+                                ImageManager.getInstance().deleteImage(images.get(finalIndex).getFilename()); // on supprime de la DB
                                 inputFile.delete(); // on supprime le fichier non chiffré
                             } catch (Exception ex) {
                                 ex.printStackTrace();
