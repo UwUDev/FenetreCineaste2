@@ -132,7 +132,7 @@ public enum ImageManager {
         try (Connection connection = getConnection()) {
             images.clear();
 
-            //deleteAllImages(); permet de vider la DB lors des tests
+            //deleteAllImages(); pour delete la DB
 
             // Crée un objet Statement pour exécuter une requête SELECT sur la table "images"
             Statement stmt = connection.createStatement();
