@@ -60,7 +60,7 @@ public class CryptoUtils {
 
             outputStream.write(ivSpec.getIV()); // on écrit le vecteur d'initialisation dans le fichier de sortie
 
-            processFile(cipher, inputStream, outputStream); // on chiffre le fichier
+            gloubiBoulga(cipher, inputStream, outputStream); // on chiffre le fichier
         }
     }
 
@@ -78,12 +78,12 @@ public class CryptoUtils {
 
             cipher.init(Cipher.DECRYPT_MODE, getKeyFromPassword(password), ivSpec); // on initialise le Cipher en mode déchiffrement, en utilisant la clé générée à partir du mot de passe et le vecteur d'initialisation
 
-            processFile(cipher, inputStream, outputStream); // on déchiffre le fichier
+            gloubiBoulga(cipher, inputStream, outputStream); // on déchiffre le fichier
         }
     }
 
     @SneakyThrows
-    private static void processFile(Cipher cipher, FileInputStream inputStream, FileOutputStream outputStream) { // fonction qui permet de chiffrer ou déchiffrer un fichier
+    private static void gloubiBoulga(Cipher cipher, FileInputStream inputStream, FileOutputStream outputStream) { // fonction qui permet de chiffrer ou déchiffrer un fichier
         byte[] buffer = new byte[64]; // on crée un tableau de 64 octets pour le buffer
         int bytesRead; // on crée une variable pour stocker le nombre d'octets lus
         while ((bytesRead = inputStream.read(buffer)) != -1) { // on lit le fichier d'entrée tant qu'on n'est pas à la fin du fichier
